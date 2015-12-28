@@ -1,0 +1,43 @@
+.main-width {
+    width: 1024px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.input-group{
+    margin-right: 10px;
+    width: 260px;
+    margin-bottom: 10px;
+}
+
+.input--kuro{
+    margin-right: 24px;
+    margin-bottom: 60px;
+}
+
+.btn-primary{
+   margin-left: 12px; 
+   margin-bottom: 10px;
+   float:right
+}
+
+.btn-info{
+    float: right;
+}
+
+body{
+    background: #e4e7ea;
+}
+
+.dropdown-menu>li>a{
+    text-align: center;
+    color: white;
+}
+
+.navbar-nav>li>.dropdown-menu{
+    background: black;
+}
+
+a{
+    vertical-align: sub;
+}

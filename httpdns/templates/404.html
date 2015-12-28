@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+{% extends "./base.html" %}
+{% block body %}
+<section>
+  <div class="notfoundpanel">
+    <h1>404!</h1>
+    <h3>The page you are looking for has not been found!</h3>
+    <h4>The page you are looking for might have been removed, had its name changed, or unavailable. <br />Maybe you could check the domain name.</h4>
+    <button class="btn btn-success" id="return">Return</button>
+  </div>
+</section>
+<script>
+$('#return').click(function(){
+    var self = $(this);
+    href = self.attr('href');
+    $.post(href, {}, function(){
+        window.location.href = "{{ url_for('index.index') }}"
+    });
+});
+</script>
+{% endblock %}

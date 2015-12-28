@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% extends "./base.html" %}
+{% block head %}
+{% endblock %}
+{% block body %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+    <strong> HTTPDNS Control</strong>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Domain Name</th>
+        <th style="text-align:right">Operating</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in results %}
+      <tr>
+        <td><a href={{ url_for('index.index') + result }}>{{ result }}</a></td>
+        <td>
+          <div href="{{ url_for('index.delete_domain', domain=result) }}" class="btn btn-danger" style="float:right">
+            <span>Delete</span>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="panel panel-info">
+  <div class="panel-heading"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span><strong> Setting</strong></div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Time To Live</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ ttl }} ms</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<form method="POST" class='form-inline'>
+  <div class="panel panel-primary">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>DomainName</th>
+          <th>IP</th>
+          <th style="text-align:right">Operation</th>
+       </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon1"> 域名</span>
+                <input type="text" name="host" class="form-control" placeholder="www.hunantv.com" aria-describedby="sizing-addon1">
+            </div>     
+          </td>
+          <td>
+            <div class="input-group">
+              <span class="input-group-addon" id="sizing-addon2"> IP</span>
+              <input type="text" name="ip" class="form-control" placeholder="如:192.168.0.1" aria-describedby="sizing-addon2">
+            </div>     
+          </td>
+          <td>
+            <button class="btn btn-primary" id="add" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ADD DomainName</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>
+</body>
+<script>
+$('.btn-danger').click(function(e){
+     var self = $(this);
+     href = self.attr('href');
+     if (!confirm('确定要删除么?')) {
+         return;
+     }else{
+       $.post(href, {}, function(){
+         window.location.href = '/';
+       });
+     }
+ });
+</script>
+{% endblock %}

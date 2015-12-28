@@ -1,0 +1,8 @@
+appname: "httpdnsinterface"
+entrypoints:
+  web:
+    cmd: "gunicorn -c gun.conf manage:app"
+    ports:
+      - "56500/tcp"
+build:
+  - "pip install -r requirements.txt"

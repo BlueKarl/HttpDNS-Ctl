@@ -1,0 +1,9 @@
+Flask
+Flask-Script
+gunicorn
+click
+redis
+gevent
+pytest
+requests
+pyyaml

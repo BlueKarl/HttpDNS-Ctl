@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% extends "./base.html" %}
+{% block head %}
+{% endblock%}
+{% block body %}
+<form method="POST">
+  <div class="panel panel-primary">
+    <div class="panel-heading"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> DomainName: {{ domain }}</div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Service Provider</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for result in results|sort %}
+      <tr>
+        <td>{{ spnummap[result] }}({{ result }})</td>
+        <td>
+          {% for ip in results[result]|sort %}
+          {{ ip }}
+          <input type='hidden' id='a' name='resultvalue' value={{ domain }}>
+          <div href="{{ url_for('index.delete_info', domain=domain, isp=result, ip=ip)}}" class="btn btn-danger" style="float:right">
+              <span>Delete</span>
+          </div> 
+          <br>
+          <br>
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon1"> isp</span>
+          <input type="text" name="local" class="form-control" placeholder="如:1,2,...(isp编号)" aria-describedby="sizing-addon1">
+      </div> 
+    </div>
+    <div class="col-xs-4">
+      <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2"> IP</span>
+          <input type="text" name="ip" class="form-control" placeholder="如:192.168.0.1" aria-describedby="sizing-addon2">
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <button class="btn btn-primary" name="add" value="addvalue" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ADD isp&ip</button>
+    </div>
+    <div class="col-xs-2">
+      <button class="btn btn-info" id="return"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> 返回上一页</button>
+    </div>
+  </div>
+  <button class="btn btn-warning" id="button" onclick="help()">点此处查看isp编号与其对应关系</button></br>
+  <div class="alert alert-info" role="alert" id="help">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>   
+    {% for result in spnummap|sort %}
+    <{{ result }}: {{ spnummap[result] }}>
+    {% endfor %}
+  </div>
+
+<script type="text/javascript">
+$('.btn-danger').click(function(){
+    var url = $('#a').val();
+    var self = $(this);
+    href = self.attr('href');
+    if (!confirm('确定要删除么?')) {
+        return;
+    }else{
+      $.post(href, {}, function(){
+        window.location.href = '/'+ url;
+      });
+    }
+});
+$('#return').click(function(){
+    var self = $(this);
+    href = self.attr('href');
+    $.post(href, {}, function(){
+        window.location.href = "{{ url_for('index.index') }}"
+    });
+});
+function help()
+{
+    help.style.display='';
+}
+</script>
+</form>
+{% endblock %}
