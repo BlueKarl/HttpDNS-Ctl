@@ -6,9 +6,9 @@ from flask import url_for, redirect, g, render_template, Blueprint, request, abo
 from collections import defaultdict
 
 from httpdns.db import rds
-from httpdns.model import DomainName
+from httpdns.model import DomainName, Service_IP
 from httpdns.config import DEFAULT_CACHE_TIME
-from httpdns.consts import HTTPDNS_DOMAIN_PREFIX, DEFAULT_SP_NUM, SP_NUM_MAP
+from httpdns.consts import HTTPDNS_IP_DEFAULT, HTTPDNS_DOMAIN_PREFIX, DEFAULT_SP_NUM, SP_NUM_MAP
 
 bp = Blueprint('index', __name__)
 reload(sys) 
@@ -23,15 +23,36 @@ def index():
         if len(domain) != 0 and len(ip) != 0:
             domain_name.add(ip)
     domains = rds.smembers(HTTPDNS_DOMAIN_PREFIX)
+    default_ip = rds.hget(HTTPDNS_IP_DEFAULT, 'ip')
     TTL = DEFAULT_CACHE_TIME
     if not domains:
         domains = "0"
+    if not default_ip:
+        default_ip = 'not set'
     count = {}
     for domain in domains:
         domain_name = DomainName(domain)
         count[domain] = domain_name.get_all_counts()
-    return render_template('index.html', ttl=TTL, count=count, results=domains)
-
+    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=default_ip)
+@bp.route('/default/', methods=['GET', 'POST'])
+def default():
+    if request.method == 'POST':
+        ip = ''.join(request.form.get('defaultip', default='').split())
+        default_ip = Service_IP(ip)
+        if len(ip) != 0:
+            default_ip.set_default_ip(ip)
+    domains = rds.smembers(HTTPDNS_DOMAIN_PREFIX)
+    default_ip = rds.hget(HTTPDNS_IP_DEFAULT, 'ip')
+    TTL = DEFAULT_CACHE_TIME
+    if not domains:
+        domains = "0"
+    if not default_ip:
+        default_ip = 'not set'
+    count = {}
+    for domain in domains:
+        domain_name = DomainName(domain)
+        count[domain] = domain_name.get_all_counts()
+    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=default_ip)
 @bp.route('/<domain>/', methods=['GET', 'POST'])
 def show_info(domain):
     domain_name = DomainName(domain)

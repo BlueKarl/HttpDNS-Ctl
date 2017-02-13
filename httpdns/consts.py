@@ -4,6 +4,7 @@
 HTTPDNS_IP_PREFIX = 'httpdns:ip'
 HTTPDNS_DOMAIN_PREFIX = 'httpdns:domain'
 HTTPDNS_SERVICE_PREFIX = 'httpdns:service'
+HTTPDNS_IP_DEFAULT = 'httpdns:default'
 
 DEFAULT_SP_NUM = '0'
 

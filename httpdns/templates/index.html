@@ -35,16 +35,18 @@
     <thead>
       <tr>
         <th>Time To Live</th>
+        <th>Main_IP</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>{{ ttl }} ms</td>
+        <td>{{ default_ip }}</td>
       </tr>
     </tbody>
   </table>
 </div>
-<form method="POST" class='form-inline'>
+<form method="POST" class='form-inline' action='/'>
   <div class="panel panel-primary">
     <table class="table table-striped">
       <thead>
@@ -76,6 +78,32 @@
     </table>
   </div>
 </form>
+<form method="POST" class='form-inline' action='/default/'>
+  <div class="panel panel-primary">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>SET Default IP</th>
+          <th style="text-align:right">Operation</th>
+       </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon3"> 备用IP</span>
+                <input type="text" name="defaultip" class="form-control" placeholder="如：192.168.2.4" aria-describedby="sizing-addon3">
+            </div>     
+          </td>
+          <td>
+            <button class="btn btn-primary" id="add" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add/Modify Main ip</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>
+
 </body>
 <script>
 $('.btn-danger').click(function(e){

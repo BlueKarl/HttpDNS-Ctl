@@ -134,7 +134,7 @@ class DomainName(object):
         return result
 
 
-class Service(object):
+class Service_TTL(object):
 
     def __init__(self, service_num):
         self.service_key = 'httpdns:service:{0}'.format(service_num)
@@ -144,3 +144,14 @@ class Service(object):
 
     def get_ttl(self):
         return rds.hget(self.service_key, 'ttl')
+
+class Service_IP(object):
+    def __init__(self, ip):
+        self.service_ip = 'httpdns:default'
+
+    def set_default_ip(self, default):
+        return rds.hset(self.service_ip, 'ip', default)
+
+    def get_default_ip(self):
+        return rds.hget(self.service_ip, 'ip')
+
