@@ -12,4 +12,4 @@ httpdnsinterface
 * 当缺省的Service Provider只有1个ip时不可被删除
 
 ### admin权限
-* openid登录后，若显示403界面请rtx联系“邱昊”增加权限
+* openid登陆
