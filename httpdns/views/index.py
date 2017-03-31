@@ -23,36 +23,43 @@ def index():
         if len(domain) != 0 and len(ip) != 0:
             domain_name.add(ip)
     domains = rds.smembers(HTTPDNS_DOMAIN_PREFIX)
-    default_ip = rds.hget(HTTPDNS_IP_DEFAULT, 'ip')
+    default_ip = rds.smembers(HTTPDNS_IP_DEFAULT)
+    listip = []
+    if default_ip:
+        for ip in default_ip:
+            listip.append(ip)
     TTL = DEFAULT_CACHE_TIME
     if not domains:
         domains = "0"
-    if not default_ip:
-        default_ip = 'not set'
     count = {}
     for domain in domains:
         domain_name = DomainName(domain)
         count[domain] = domain_name.get_all_counts()
-    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=default_ip)
+    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=listip)
+
 @bp.route('/default/', methods=['GET', 'POST'])
 def default():
     if request.method == 'POST':
         ip = ''.join(request.form.get('defaultip', default='').split())
         default_ip = Service_IP(ip)
         if len(ip) != 0:
-            default_ip.set_default_ip(ip)
+            default_ip.sadd_default_ip(ip)
+
     domains = rds.smembers(HTTPDNS_DOMAIN_PREFIX)
-    default_ip = rds.hget(HTTPDNS_IP_DEFAULT, 'ip')
+    default_ip = rds.smembers(HTTPDNS_IP_DEFAULT)
     TTL = DEFAULT_CACHE_TIME
+    listip = []
+    if default_ip:
+        for ip in default_ip:
+            listip.append(ip)
     if not domains:
         domains = "0"
-    if not default_ip:
-        default_ip = 'not set'
     count = {}
     for domain in domains:
         domain_name = DomainName(domain)
         count[domain] = domain_name.get_all_counts()
-    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=default_ip)
+    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=listip)
+
 @bp.route('/<domain>/', methods=['GET', 'POST'])
 def show_info(domain):
     domain_name = DomainName(domain)
@@ -92,12 +99,31 @@ def delete_domain(domain):
             result[sp].append(host)
     return render_template('index.html', result=result)
 
+@bp.route('/delete/<request_addr>', methods=['POST'])
+def delete_request_addr(request_addr):
+    print 1
+    rds.srem(HTTPDNS_IP_DEFAULT, request_addr)
+    domains = rds.smembers(HTTPDNS_DOMAIN_PREFIX)
+    default_ip = rds.smembers(HTTPDNS_IP_DEFAULT)
+    TTL = DEFAULT_CACHE_TIME
+    listip = []
+    if default_ip:
+        for ip in default_ip:
+            listip.append(ip)
+    if not domains:
+        domains = "0"
+    count = {}
+    for domain in domains:
+        domain_name = DomainName(domain)
+        count[domain] = domain_name.get_all_counts()
+    return render_template('index.html', ttl=TTL, count=count, results=domains, default_ip=list_ip)
+
 @bp.errorhandler(403)
 @bp.errorhandler(404)
 def errorhandler(error):
     return render_template('{}.html'.format(error.code))
 
-@bp.before_request
-def login_or_not():
-    if not g.user:
-        abort(403)
+#@bp.before_request
+#def login_or_not():
+#    if not g.user:
+#        abort(403)

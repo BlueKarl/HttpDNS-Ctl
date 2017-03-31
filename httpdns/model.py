@@ -147,11 +147,11 @@ class Service_TTL(object):
 
 class Service_IP(object):
     def __init__(self, ip):
-        self.service_ip = 'httpdns:default'
+        self.service_ip = 'httpdns:default:ip'
 
-    def set_default_ip(self, default):
-        return rds.hset(self.service_ip, 'ip', default)
+    def sadd_default_ip(self, default):
+        return rds.sadd(self.service_ip, default)
 
-    def get_default_ip(self):
-        return rds.hget(self.service_ip, 'ip')
+    def semembers_default_ip(self):
+        return rds.semembers(self.service_ip)
 
